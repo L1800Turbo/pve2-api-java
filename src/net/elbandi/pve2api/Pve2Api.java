@@ -404,6 +404,29 @@ public class Pve2Api {
 		return new VncData(jObj.getJSONObject("data"));
 	}
 
+	public JSONObject getQemuAgentInfo(String node, int vmid) throws LoginException, JSONException, IOException {
+        JSONObject jObj = pve_action("/nodes/" + node + "/qemu/" + vmid + "/agent/info",
+				RestClient.RequestMethod.GET, null);
+        return jObj.getJSONObject("data");
+    }
+
+    public JSONObject getQemuAgentNetworkInterfaces(String node, int vmid) throws LoginException, JSONException, IOException {
+        JSONObject jObj = pve_action("/nodes/" + node + "/qemu/" + vmid + "/agent/network-get-interfaces",
+				RestClient.RequestMethod.GET, null);
+        return jObj.getJSONObject("data");
+    }
+
+    public String suspendQemuToDisk(String node, int vmid) throws LoginException, JSONException, IOException {
+        Map<String, String> data = new HashMap<String, String>() {
+            {
+                put("todisk", "1");
+            }
+        };
+		JSONObject jObj = pve_action("/nodes/" + node + "/qemu/" + vmid + "/status/suspend",
+				RestClient.RequestMethod.POST, data);
+		return jObj.getString("data");
+	}
+
 	public String suspendQemu(String node, int vmid) throws LoginException, JSONException,
 			IOException {
 		JSONObject jObj = pve_action("/nodes/" + node + "/qemu/" + vmid + "/status/suspend",
